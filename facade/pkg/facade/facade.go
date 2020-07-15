@@ -1,74 +1,52 @@
 package facade
 
 import (
-	"math/rand"
-	"strings"
+	"strconv"
+
+	"github.com/konvulcius/patternsWB/facade/pkg/bricks"
+	"github.com/konvulcius/patternsWB/facade/pkg/builders"
+	"github.com/konvulcius/patternsWB/facade/pkg/facade/models"
 )
 
-type Specifier interface {
-	Specify() string
+//BrigadierWorker our facade
+type BrigadierWorker interface {
+	BrigadierWork() (string, error)
 }
 
-type shirt struct {
-	shirtType	*shirtType
-	size		*size
-	color		*color
+type brigadier struct {
+	amount   float64
+	bricks   bricks.Getter
+	builders builders.Getter
+	err      error
 }
 
-type shirtType struct {
-}
-
-type size struct {
-}
-
-type color struct {
-}
-
-func (s *shirt) Specify() string {
-	result := []string{
-		"type: " + s.shirtType.takeType(),
-		"size: " + s.size.takeSize(),
-		"color: " + s.color.takeColor(),
+//BrigadierWork brigadier buy materials and hire workers
+func (b *brigadier) BrigadierWork() (s string, err error) {
+	b.builders = builders.NewGetter(b.amount)
+	buildersCost, errBuilders := b.builders.Get()
+	if errBuilders != nil {
+		b.err = errBuilders
+		return s, b.err
 	}
-	return strings.Join(result, "\n")
+	b.amount -= buildersCost
+	b.bricks = bricks.NewGetter(b.amount)
+	bricksCost, errBricks := b.bricks.Get()
+	if errBricks != nil {
+		b.err = errBricks
+		return s, b.err
+	}
+	b.amount -= bricksCost
+	s = models.Prefix + strconv.FormatFloat(bricksCost+buildersCost, 'f', 0, 64) + models.Suffix
+	return s, err
 }
 
-func (s *shirtType) takeType() string {
-	var types []string = []string{
-		"slim",
-		"turbo slim",
-		"regular",
-	}
-	return types[rand.Intn(len(types))]
+//NewBrigadierWorker hire a brigadier
+func NewBrigadierWorker(amount float64) (b BrigadierWorker) {
+	return newBrigadier(amount)
 }
 
-func (s *size) takeSize() string {
-	var sizes []string = []string{
-		"S",
-		"M",
-		"L",
-		"XL",
-		"XXL",
+func newBrigadier(amount float64) (b *brigadier) {
+	return &brigadier{
+		amount: amount,
 	}
-	return sizes[rand.Intn(len(sizes))]
-}
-
-func (c *color) takeColor() string {
-	var colores []string = []string{
-		"red",
-		"green",
-		"blue",
-		"white",
-		"black",
-	}
-	return colores[rand.Intn(len(colores))]
-}
-
-func NewSpecifier() Specifier {
-	shirtNew := &shirt{
-		&shirtType{},
-		&size{},
-		&color{},
-	}
-	return Specifier(shirtNew)
 }
