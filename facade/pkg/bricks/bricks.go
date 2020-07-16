@@ -8,49 +8,39 @@ import (
 
 //Getter parameters from bricks
 type Getter interface {
-	Get() (float64, error)
+	Get() (cost float64, err error)
 }
 
 type bricks struct {
-	brickType models.BrickType
-	cost      models.Cost
+	brickType string
+	cash      float64
 }
 
 //Get get bricks or return error
 func (b *bricks) Get() (cost float64, err error) {
-	if b.brickType != "" {
-		return float64(b.cost), err
+	switch {
+	case b.cash >= models.CeramicCost:
+		{
+			b.brickType = models.Ceramic
+			return models.CeramicCost, err
+		}
+	case b.cash >= models.SilicateCost:
+		{
+			b.brickType = models.Silicate
+			return models.SilicateCost, err
+		}
+	case b.cash >= models.GasBlockCost:
+		{
+			b.brickType = models.GasBlock
+			return models.GasBlockCost, err
+		}
 	}
 	return cost, errors.New(models.NoMoney)
 }
 
-func (b *bricks) choose(amount models.Cost) {
-	switch {
-	case amount >= models.CeramicCost:
-		{
-			b.brickType = models.Ceramic
-			b.cost = models.CeramicCost
-		}
-	case amount >= models.SilicateCost:
-		{
-			b.brickType = models.Silicate
-			b.cost = models.SilicateCost
-		}
-	case amount >= models.GasBlockCost:
-		{
-			b.brickType = models.GasBlock
-			b.cost = models.GasBlockCost
-		}
-	}
-}
-
 //NewGetter choose bricks depending on the amount of cash
 func NewGetter(amount float64) (g Getter) {
-	bricks := newBricks()
-	bricks.choose(models.Cost(amount))
-	return bricks
-}
-
-func newBricks() (b *bricks) {
-	return &bricks{}
+	return &bricks{
+		cash: amount,
+	}
 }

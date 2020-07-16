@@ -4,18 +4,15 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/konvulcius/patternsWB/facade/pkg/bricks"
+	"github.com/konvulcius/patternsWB/facade/pkg/builders"
 	"github.com/konvulcius/patternsWB/facade/pkg/facade"
 )
 
 func main() {
-	fmt.Println("Enter your amount of cash")
-	var amount float64
-	_, errScan := fmt.Scan(&amount)
-	if errScan != nil {
-		fmt.Println("you should enter a digit")
-		return
-	}
-	brigadier := facade.NewBrigadierWorker(amount)
+	bricks := bricks.NewGetter(2000)
+	builders := builders.NewGetter(12200)
+	brigadier := facade.NewBrigadierWorker(bricks, builders)
 	spending, err := brigadier.BrigadierWork()
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)

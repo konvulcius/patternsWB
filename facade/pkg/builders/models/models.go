@@ -12,9 +12,3 @@ const (
 	//HandymenCost ...
 	HandymenCost = 5000.0
 )
-
-//Builders ...
-type Builders string
-
-//Cost ...
-type Cost float64

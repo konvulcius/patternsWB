@@ -16,9 +16,3 @@ const (
 	//GasBlockCost ...
 	GasBlockCost = 1100.0
 )
-
-//BrickType ...
-type BrickType string
-
-//Cost ...
-type Cost float64

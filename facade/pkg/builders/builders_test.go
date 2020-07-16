@@ -8,6 +8,12 @@ import (
 	"github.com/konvulcius/patternsWB/facade/pkg/builders/models"
 )
 
+const (
+	testBuildersGetterSuccess = "Test builders getter success"
+	testBuildersGetterFail    = "Test builders getter fail"
+	unexpectedError           = "unexpected error:"
+)
+
 var (
 	givenAmounts = []float64{
 		25000.0,
@@ -26,16 +32,16 @@ func Test_NewGetter(t *testing.T) {
 	for _, cash := range givenAmounts {
 		builders = append(builders, NewGetter(cash))
 	}
-	t.Run("Test builders getter success", func(t *testing.T) {
+	t.Run(testBuildersGetterSuccess, func(t *testing.T) {
 		for i, builder := range builders {
 			builderCost, errBuilder := builder.Get()
-			assert.NoError(t, errBuilder, "unexpected error:", errBuilder)
+			assert.NoError(t, errBuilder, unexpectedError, errBuilder)
 			assert.Equal(t, expectedCost[i], builderCost)
 		}
 	})
 	noMoneyForBuilder := NewGetter(givenLow)
-	t.Run("Test builders getter fail", func(t *testing.T) {
+	t.Run(testBuildersGetterFail, func(t *testing.T) {
 		_, errBuilder := noMoneyForBuilder.Get()
-		assert.EqualError(t, errBuilder, models.NoMoney, errBuilder)
+		assert.EqualError(t, errBuilder, expectedErr, errBuilder)
 	})
 }

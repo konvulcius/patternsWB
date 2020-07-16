@@ -8,44 +8,34 @@ import (
 
 //Getter take parameters from builders
 type Getter interface {
-	Get() (float64, error)
+	Get() (cost float64, err error)
 }
 
 type builders struct {
-	builders models.Builders
-	cost     models.Cost
+	builders string
+	cash     float64
 }
 
 //Get get builders cost or return error
 func (b *builders) Get() (cost float64, err error) {
-	if b.builders != "" {
-		return float64(b.cost), err
+	switch {
+	case b.cash >= models.MasonsCost:
+		{
+			b.builders = models.Masons
+			return models.MasonsCost, err
+		}
+	case b.cash >= models.HandymenCost:
+		{
+			b.builders = models.Handymen
+			return models.HandymenCost, err
+		}
 	}
 	return cost, errors.New(models.NoMoney)
 }
 
-func (b *builders) choose(amount models.Cost) {
-	switch {
-	case amount >= models.MasonsCost:
-		{
-			b.builders = models.Masons
-			b.cost = models.MasonsCost
-		}
-	case amount >= models.HandymenCost:
-		{
-			b.builders = models.Handymen
-			b.cost = models.HandymenCost
-		}
-	}
-}
-
 //NewGetter choose new builders depending on the amount of cash
 func NewGetter(amount float64) (g Getter) {
-	builders := newBuilders()
-	builders.choose(models.Cost(amount))
-	return builders
-}
-
-func newBuilders() (b *builders) {
-	return &builders{}
+	return &builders{
+		cash: amount,
+	}
 }
