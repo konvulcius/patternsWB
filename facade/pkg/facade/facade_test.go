@@ -7,6 +7,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
+	"github.com/konvulcius/patternsWB/facade/api/v1/models"
 	"github.com/konvulcius/patternsWB/facade/pkg/bricks"
 	"github.com/konvulcius/patternsWB/facade/pkg/builders"
 )
@@ -15,8 +16,6 @@ const (
 	masonsCost                    = 10000.0
 	silicateCost                  = 1500.0
 	spendingMoney                 = "we spent %v to build a wall"
-	noMoneyBricks                 = "no money for bricks"
-	noMoneyBuilders               = "not enough money for builders"
 	brigadierSpentAllMoneySuccess = "brigadier spent all money success"
 	brigadierSpentAllMoneyFail    = "brigadier spent all money fail"
 	methodGet                     = "Get"
@@ -24,8 +23,8 @@ const (
 )
 
 var (
-	errBricks   = errors.New(noMoneyBricks)
-	errBuilders = errors.New(noMoneyBuilders)
+	errBricks   = errors.New(models.NoMoneyForBricks)
+	errBuilders = errors.New(models.NoMoneyForBuilders)
 )
 
 func TestBrigadier_BrigadierWork(t *testing.T) {
@@ -43,6 +42,6 @@ func TestBrigadier_BrigadierWork(t *testing.T) {
 	builders.On(methodGet).Return("", errBuilders).Once()
 	t.Run(brigadierSpentAllMoneyFail, func(t *testing.T) {
 		_, errCry := brigadier.BrigadierWork()
-		assert.EqualError(t, errCry, noMoneyBuilders, errCry)
+		assert.EqualError(t, errCry, models.NoMoneyForBuilders, errCry)
 	})
 }

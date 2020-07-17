@@ -3,7 +3,7 @@ package facade
 import (
 	"strconv"
 
-	"github.com/konvulcius/patternsWB/facade/pkg/facade/models"
+	"github.com/konvulcius/patternsWB/facade/api/v1/models"
 )
 
 type getter interface {

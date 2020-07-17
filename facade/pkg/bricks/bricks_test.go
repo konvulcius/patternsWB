@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/konvulcius/patternsWB/facade/pkg/bricks/models"
+	"github.com/konvulcius/patternsWB/facade/api/v1/models"
 )
 
 const (
@@ -26,7 +26,7 @@ var (
 		models.SilicateCost,
 		models.GasBlockCost,
 	}
-	expectedErr = models.NoMoney
+	expectedErr = models.NoMoneyForBricks
 )
 
 func Test_NewGetter(t *testing.T) {
