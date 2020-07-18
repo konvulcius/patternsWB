@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/konvulcius/patternsWB/facade/api/v1/models"
+	"github.com/konvulcius/patternsWB/facade/api/v1"
 )
 
 const (
@@ -22,28 +22,31 @@ var (
 	}
 	givenLow     = 100.0
 	expectedCost = []float64{
-		models.CeramicCost,
-		models.SilicateCost,
-		models.GasBlockCost,
+		v1.CeramicCost,
+		v1.SilicateCost,
+		v1.GasBlockCost,
 	}
-	expectedErr = models.NoMoneyForBricks
+	expectedErr = v1.NoMoneyForBricks
 )
 
-func Test_NewGetter(t *testing.T) {
-	var bricks []Getter
+func TestBricks_BrickCostGetSuccess(t *testing.T) {
+	var bricks []BrickCostGetter
 	for _, cash := range givenAmounts {
-		bricks = append(bricks, NewGetter(cash))
+		bricks = append(bricks, NewBrickCostGetter(cash))
 	}
 	t.Run(testBricksGetterSuccess, func(t *testing.T) {
 		for i, brick := range bricks {
-			brickCost, errBrick := brick.Get()
+			brickCost, errBrick := brick.BrickCostGet()
 			assert.NoError(t, errBrick, unexpectedError, errBrick)
 			assert.Equal(t, expectedCost[i], brickCost)
 		}
 	})
-	noMoneyForBricks := NewGetter(givenLow)
+}
+
+func TestBricks_BrickCostGetFail(t *testing.T) {
+	noMoneyForBricks := NewBrickCostGetter(givenLow)
 	t.Run(testBricksGetterFail, func(t *testing.T) {
-		_, errBrick := noMoneyForBricks.Get()
+		_, errBrick := noMoneyForBricks.BrickCostGet()
 		assert.EqualError(t, errBrick, expectedErr, errBrick)
 	})
 }

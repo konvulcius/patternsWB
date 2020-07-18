@@ -3,12 +3,12 @@ package builders
 import (
 	"errors"
 
-	"github.com/konvulcius/patternsWB/facade/api/v1/models"
+	"github.com/konvulcius/patternsWB/facade/api/v1"
 )
 
-//Getter take parameters from builders
-type Getter interface {
-	Get() (cost float64, err error)
+//BuilderCostGetter take parameters from builders
+type BuilderCostGetter interface {
+	BuilderCostGet() (cost float64, err error)
 }
 
 type builders struct {
@@ -16,25 +16,25 @@ type builders struct {
 	cash     float64
 }
 
-//Get get builders cost or return error
-func (b *builders) Get() (cost float64, err error) {
+//BuilderCostGet get builders cost or return error
+func (b *builders) BuilderCostGet() (cost float64, err error) {
 	switch {
-	case b.cash >= models.MasonsCost:
+	case b.cash >= v1.MasonsCost:
 		{
-			b.builders = models.Masons
-			return models.MasonsCost, err
+			b.builders = v1.Masons
+			return v1.MasonsCost, err
 		}
-	case b.cash >= models.HandymenCost:
+	case b.cash >= v1.HandymenCost:
 		{
-			b.builders = models.Handymen
-			return models.HandymenCost, err
+			b.builders = v1.Handymen
+			return v1.HandymenCost, err
 		}
 	}
-	return cost, errors.New(models.NoMoneyForBuilders)
+	return cost, errors.New(v1.NoMoneyForBuilders)
 }
 
-//NewGetter choose new builders depending on the amount of cash
-func NewGetter(amount float64) (g Getter) {
+//NewBuilderCostGet choose new builders depending on the amount of cash
+func NewBuilderCostGet(amount float64) BuilderCostGetter {
 	return &builders{
 		cash: amount,
 	}

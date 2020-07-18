@@ -15,8 +15,8 @@ const (
 )
 
 func main() {
-	bricks := bricks.NewGetter(cashForMaterials)
-	builders := builders.NewGetter(cashForWorkers)
+	bricks := bricks.NewBrickCostGetter(cashForMaterials)
+	builders := builders.NewBuilderCostGet(cashForWorkers)
 	brigadier := facade.NewBrigadierWorker(bricks, builders)
 	spending, err := brigadier.BrigadierWork()
 	if err != nil {

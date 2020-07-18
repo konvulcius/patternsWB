@@ -3,12 +3,12 @@ package bricks
 import (
 	"errors"
 
-	"github.com/konvulcius/patternsWB/facade/api/v1/models"
+	"github.com/konvulcius/patternsWB/facade/api/v1"
 )
 
-//Getter parameters from bricks
-type Getter interface {
-	Get() (cost float64, err error)
+//BrickCostGetter parameters from bricks
+type BrickCostGetter interface {
+	BrickCostGet() (cost float64, err error)
 }
 
 type bricks struct {
@@ -16,30 +16,30 @@ type bricks struct {
 	cash      float64
 }
 
-//Get get bricks or return error
-func (b *bricks) Get() (cost float64, err error) {
+//BrickCostGet get bricks or return error
+func (b *bricks) BrickCostGet() (cost float64, err error) {
 	switch {
-	case b.cash >= models.CeramicCost:
+	case b.cash >= v1.CeramicCost:
 		{
-			b.brickType = models.Ceramic
-			return models.CeramicCost, err
+			b.brickType = v1.Ceramic
+			return v1.CeramicCost, err
 		}
-	case b.cash >= models.SilicateCost:
+	case b.cash >= v1.SilicateCost:
 		{
-			b.brickType = models.Silicate
-			return models.SilicateCost, err
+			b.brickType = v1.Silicate
+			return v1.SilicateCost, err
 		}
-	case b.cash >= models.GasBlockCost:
+	case b.cash >= v1.GasBlockCost:
 		{
-			b.brickType = models.GasBlock
-			return models.GasBlockCost, err
+			b.brickType = v1.GasBlock
+			return v1.GasBlockCost, err
 		}
 	}
-	return cost, errors.New(models.NoMoneyForBricks)
+	return cost, errors.New(v1.NoMoneyForBricks)
 }
 
-//NewGetter choose bricks depending on the amount of cash
-func NewGetter(amount float64) (g Getter) {
+//NewBrickCostGetter choose bricks depending on the amount of cash
+func NewBrickCostGetter(amount float64) BrickCostGetter {
 	return &bricks{
 		cash: amount,
 	}

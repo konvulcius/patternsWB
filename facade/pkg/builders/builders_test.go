@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/konvulcius/patternsWB/facade/api/v1/models"
+	"github.com/konvulcius/patternsWB/facade/api/v1"
 )
 
 const (
@@ -21,27 +21,30 @@ var (
 	}
 	givenLow     = 4900.0
 	expectedCost = []float64{
-		models.MasonsCost,
-		models.HandymenCost,
+		v1.MasonsCost,
+		v1.HandymenCost,
 	}
-	expectedErr = models.NoMoneyForBuilders
+	expectedErr = v1.NoMoneyForBuilders
 )
 
-func Test_NewGetter(t *testing.T) {
-	var builders []Getter
+func TestBuilders_BuilderCostGetSuccess(t *testing.T) {
+	var builders []BuilderCostGetter
 	for _, cash := range givenAmounts {
-		builders = append(builders, NewGetter(cash))
+		builders = append(builders, NewBuilderCostGet(cash))
 	}
 	t.Run(testBuildersGetterSuccess, func(t *testing.T) {
 		for i, builder := range builders {
-			builderCost, errBuilder := builder.Get()
+			builderCost, errBuilder := builder.BuilderCostGet()
 			assert.NoError(t, errBuilder, unexpectedError, errBuilder)
 			assert.Equal(t, expectedCost[i], builderCost)
 		}
 	})
-	noMoneyForBuilder := NewGetter(givenLow)
+}
+
+func TestBuilders_BuilderCostGetFail(t *testing.T) {
+	noMoneyForBuilder := NewBuilderCostGet(givenLow)
 	t.Run(testBuildersGetterFail, func(t *testing.T) {
-		_, errBuilder := noMoneyForBuilder.Get()
+		_, errBuilder := noMoneyForBuilder.BuilderCostGet()
 		assert.EqualError(t, errBuilder, expectedErr, errBuilder)
 	})
 }

@@ -3,39 +3,43 @@ package facade
 import (
 	"strconv"
 
-	"github.com/konvulcius/patternsWB/facade/api/v1/models"
+	"github.com/konvulcius/patternsWB/facade/api/v1"
 )
 
-type getter interface {
-	Get() (cost float64, err error)
+type brickGetter interface {
+	BrickCostGet() (cost float64, err error)
+}
+
+type builderGetter interface {
+	BuilderCostGet() (cost float64, err error)
 }
 
 //BrigadierWorker our facade
 type BrigadierWorker interface {
-	BrigadierWork() (string, error)
+	BrigadierWork() (s string, err error)
 }
 
 type brigadier struct {
-	bricks   getter
-	builders getter
+	bricks   brickGetter
+	builders builderGetter
 }
 
 //BrigadierWork brigadier buy materials and hire workers
 func (b *brigadier) BrigadierWork() (s string, err error) {
-	buildersCost, errBuilders := b.builders.Get()
+	buildersCost, errBuilders := b.builders.BuilderCostGet()
 	if errBuilders != nil {
 		return s, errBuilders
 	}
-	bricksCost, errBricks := b.bricks.Get()
+	bricksCost, errBricks := b.bricks.BrickCostGet()
 	if errBricks != nil {
 		return s, errBricks
 	}
-	s = models.Prefix + strconv.FormatFloat(bricksCost+buildersCost, 'f', 0, 64) + models.Suffix
+	s = v1.Prefix + strconv.FormatFloat(bricksCost+buildersCost, 'f', 0, 64) + v1.Suffix
 	return s, err
 }
 
 //NewBrigadierWorker hire a brigadier
-func NewBrigadierWorker(bricks getter, builders getter) (b BrigadierWorker) {
+func NewBrigadierWorker(bricks brickGetter, builders builderGetter) BrigadierWorker {
 	return &brigadier{
 		bricks:   bricks,
 		builders: builders,
