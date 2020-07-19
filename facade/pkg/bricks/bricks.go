@@ -3,7 +3,7 @@ package bricks
 import (
 	"errors"
 
-	"github.com/konvulcius/patternsWB/facade/api/v1"
+	"github.com/konvulcius/patternsWB/facade/pkg/api/v1"
 )
 
 //BrickCostGetter parameters from bricks
@@ -35,7 +35,8 @@ func (b *bricks) BrickCostGet() (cost float64, err error) {
 			return v1.GasBlockCost, err
 		}
 	}
-	return cost, errors.New(v1.NoMoneyForBricks)
+	err = errors.New(v1.NoMoneyForBricks)
+	return
 }
 
 //NewBrickCostGetter choose bricks depending on the amount of cash

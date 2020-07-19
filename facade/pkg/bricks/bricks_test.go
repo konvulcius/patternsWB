@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/konvulcius/patternsWB/facade/api/v1"
+	"github.com/konvulcius/patternsWB/facade/pkg/api/v1"
 )
 
 const (

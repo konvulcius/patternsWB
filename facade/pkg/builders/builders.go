@@ -3,7 +3,7 @@ package builders
 import (
 	"errors"
 
-	"github.com/konvulcius/patternsWB/facade/api/v1"
+	"github.com/konvulcius/patternsWB/facade/pkg/api/v1"
 )
 
 //BuilderCostGetter take parameters from builders
@@ -30,7 +30,8 @@ func (b *builders) BuilderCostGet() (cost float64, err error) {
 			return v1.HandymenCost, err
 		}
 	}
-	return cost, errors.New(v1.NoMoneyForBuilders)
+	err = errors.New(v1.NoMoneyForBuilders)
+	return
 }
 
 //NewBuilderCostGet choose new builders depending on the amount of cash

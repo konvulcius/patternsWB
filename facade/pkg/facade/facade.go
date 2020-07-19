@@ -3,7 +3,7 @@ package facade
 import (
 	"strconv"
 
-	"github.com/konvulcius/patternsWB/facade/api/v1"
+	"github.com/konvulcius/patternsWB/facade/pkg/api/v1"
 )
 
 type brickGetter interface {
@@ -35,7 +35,7 @@ func (b *brigadier) BrigadierWork() (s string, err error) {
 		return s, errBricks
 	}
 	s = v1.Prefix + strconv.FormatFloat(bricksCost+buildersCost, 'f', 0, 64) + v1.Suffix
-	return s, err
+	return
 }
 
 //NewBrigadierWorker hire a brigadier
