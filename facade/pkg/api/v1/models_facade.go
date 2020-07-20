@@ -1,6 +1,6 @@
 package v1
 
-//Const ...
+// Const ...
 const (
 	Prefix = "you spent "
 	Suffix = " to build a wall"

@@ -43,9 +43,9 @@ func TestBrigadier_BrigadierWorkSuccess(t *testing.T) {
 
 func TestBrigadier_BrigadierWorkFail(t *testing.T) {
 	bricks := new(bricks.MockBricks)
-	bricks.On(methodBrickGet).Return("", errBricks).Once()
+	bricks.On(methodBrickGet).Return(0.0, errBricks).Once()
 	builders := new(builders.MockBuilders)
-	builders.On(methodBuilderGet).Return("", errBuilders).Once()
+	builders.On(methodBuilderGet).Return(0.0, errBuilders).Once()
 	brigadier := NewBrigadierWorker(bricks, builders)
 	t.Run(brigadierSpentAllMoneyFail, func(t *testing.T) {
 		_, errCry := brigadier.BrigadierWork()

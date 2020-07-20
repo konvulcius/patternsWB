@@ -14,7 +14,7 @@ type builderGetter interface {
 	BuilderCostGet() (cost float64, err error)
 }
 
-//BrigadierWorker our facade
+// BrigadierWorker our facade
 type BrigadierWorker interface {
 	BrigadierWork() (s string, err error)
 }
@@ -24,7 +24,7 @@ type brigadier struct {
 	builders builderGetter
 }
 
-//BrigadierWork brigadier buy materials and hire workers
+// BrigadierWork brigadier buy materials and hire workers
 func (b *brigadier) BrigadierWork() (s string, err error) {
 	buildersCost, errBuilders := b.builders.BuilderCostGet()
 	if errBuilders != nil {
@@ -38,7 +38,7 @@ func (b *brigadier) BrigadierWork() (s string, err error) {
 	return
 }
 
-//NewBrigadierWorker hire a brigadier
+// NewBrigadierWorker hire a brigadier
 func NewBrigadierWorker(bricks brickGetter, builders builderGetter) BrigadierWorker {
 	return &brigadier{
 		bricks:   bricks,

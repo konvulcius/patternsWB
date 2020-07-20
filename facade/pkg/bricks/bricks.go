@@ -6,40 +6,39 @@ import (
 	"github.com/konvulcius/patternsWB/facade/pkg/api/v1"
 )
 
-//BrickCostGetter parameters from bricks
+// BrickCostGetter parameters from bricks
 type BrickCostGetter interface {
 	BrickCostGet() (cost float64, err error)
 }
 
 type bricks struct {
-	brickType string
-	cash      float64
+	cash float64
 }
 
-//BrickCostGet get bricks or return error
+// BrickCostGet get bricks or return error
 func (b *bricks) BrickCostGet() (cost float64, err error) {
 	switch {
 	case b.cash >= v1.CeramicCost:
 		{
-			b.brickType = v1.Ceramic
-			return v1.CeramicCost, err
+			cost = v1.CeramicCost
 		}
 	case b.cash >= v1.SilicateCost:
 		{
-			b.brickType = v1.Silicate
-			return v1.SilicateCost, err
+			cost = v1.SilicateCost
 		}
 	case b.cash >= v1.GasBlockCost:
 		{
-			b.brickType = v1.GasBlock
-			return v1.GasBlockCost, err
+			cost = v1.GasBlockCost
+		}
+	default:
+		{
+			err = errors.New(v1.NoMoneyForBricks)
 		}
 	}
-	err = errors.New(v1.NoMoneyForBricks)
 	return
 }
 
-//NewBrickCostGetter choose bricks depending on the amount of cash
+// NewBrickCostGetter choose bricks depending on the amount of cash
 func NewBrickCostGetter(amount float64) BrickCostGetter {
 	return &bricks{
 		cash: amount,
