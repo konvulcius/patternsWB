@@ -3,18 +3,40 @@ package main
 import (
 	"fmt"
 
-	"github.com/konvulcius/patternsWB/visitor/pkg/google"
-	"github.com/konvulcius/patternsWB/visitor/pkg/rambler"
+	"github.com/konvulcius/patternsWB/visitor/pkg/square"
+	"github.com/konvulcius/patternsWB/visitor/pkg/triangle"
 	"github.com/konvulcius/patternsWB/visitor/pkg/visitor"
-	"github.com/konvulcius/patternsWB/visitor/pkg/wildberries"
+)
+
+const (
+	prefixTriangle = "triangle: "
+	prefixSquare   = "square: "
+	triangleSideA  = 3.0
+	triangleSideB  = 4.0
+	triangleSideC  = 5.0
+	squareSide     = 11.0
+	op             = "sqrt"
 )
 
 func main() {
-	sites := visitor.NewSites()
+	triangle := triangle.NewTriangle(triangleSideA, triangleSideB, triangleSideC)
+	square := square.NewSquare(squareSide, squareSide, squareSide, triangleSideC)
+	visitor := visitor.NewVisitor(op)
 
-	sites.Add(rambler.NewRambler())
-	sites.Add(google.NewGoogle())
-	sites.Add(wildberries.NewWildBerries())
-
-	fmt.Println(sites.Accept(visitor.NewVisitor()))
+	var (
+		msg string
+		err error
+	)
+	// visit triangle
+	msg, err = triangle.Accept(visitor)
+	if err != nil {
+		msg = err.Error()
+	}
+	fmt.Println(prefixTriangle, msg)
+	//visit square
+	msg, err = square.Accept(visitor)
+	if err != nil {
+		msg = err.Error()
+	}
+	fmt.Println(prefixSquare, msg)
 }
