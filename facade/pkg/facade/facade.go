@@ -26,14 +26,13 @@ type brigadier struct {
 
 // BrigadierWork brigadier buy materials and hire workers
 func (b *brigadier) BrigadierWork() (s string, err error) {
-	buildersCost, errBuilders := b.builders.BuilderCostGet()
-	if errBuilders != nil {
-		err = errBuilders
+	var buildersCost, bricksCost float64
+	buildersCost, err = b.builders.BuilderCostGet()
+	if err != nil {
 		return
 	}
-	bricksCost, errBricks := b.bricks.BrickCostGet()
-	if errBricks != nil {
-		err = errBricks
+	bricksCost, err = b.bricks.BrickCostGet()
+	if err != nil {
 		return
 	}
 	s = v1.Prefix + strconv.FormatFloat(bricksCost+buildersCost, 'f', 0, 64) + v1.Suffix
