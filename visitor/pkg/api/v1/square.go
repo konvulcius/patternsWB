@@ -2,5 +2,6 @@ package v1
 
 // Const ...
 const (
-	WrongSquare = "it's can not be a square"
+	ZeroSideSquare     = "side can't be zero\n"
+	NegativeSideSquare = "side can't be negative\n"
 )

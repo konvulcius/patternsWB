@@ -2,11 +2,10 @@ package visitor
 
 import (
 	"errors"
-	"math"
-	"strconv"
-	"strings"
+	"fmt"
 
 	"github.com/konvulcius/patternsWB/visitor/pkg/api/v1"
+	"github.com/konvulcius/patternsWB/visitor/pkg/circle"
 	"github.com/konvulcius/patternsWB/visitor/pkg/square"
 	"github.com/konvulcius/patternsWB/visitor/pkg/triangle"
 )
@@ -15,10 +14,10 @@ import (
 type Visitor interface {
 	VisitTriangle(t triangle.Triangle) (msg string, err error)
 	VisitSquare(s square.Square) (msg string, err error)
+	VisitCircle(c circle.Circle) (msg string, err error)
 }
 
 type element struct {
-	op string
 }
 
 // VisitTriangle work with triangle's sides and do some op
@@ -27,59 +26,50 @@ func (e *element) VisitTriangle(t triangle.Triangle) (msg string, err error) {
 	if err != nil {
 		return
 	}
-	sideA, sideB, sideC := t.GetSides()
-	switch {
-	case strings.EqualFold(e.op, v1.OpSqrt):
-		{
-			perimeter := sideA + sideB + sideC
-			res := math.Sqrt(perimeter)
-			msg = v1.SqrtSum + strconv.FormatFloat(res, 'f', 2, 64)
-		}
-	case strings.EqualFold(e.op, v1.OpPow):
-		{
-			res := sideA*sideA + sideB*sideB + sideC*sideC
-			msg = v1.SumPow + strconv.FormatFloat(res, 'f', 2, 64)
-		}
-	default:
-		{
-			err = errors.New(v1.UnknownOp)
-		}
+	if !t.CheckStraightIsoscelesTriangle() {
+		err = errors.New(v1.CantCreateSquare)
+		return
 	}
+	// choose square's side
+	a, b, c := t.GetSides()
+	var squareSide float64
+	switch {
+	case a <= b:
+		fallthrough
+	case a <= c:
+		squareSide = a
+	default:
+		squareSide = b
+	}
+	msg = fmt.Sprintf(v1.CanCreateSquare, squareSide)
 	return
 }
 
-// VisitSquare work with square's sides and do some op
+// VisitSquare ...
 func (e *element) VisitSquare(s square.Square) (msg string, err error) {
 	err = s.CheckCorrect()
 	if err != nil {
 		return
 	}
-	sideA, _, _, _ := s.GetSides()
-	switch {
-	case strings.EqualFold(e.op, v1.OpSqrt):
-		{
-			// не думмаю что количество сторон в квадрате поменяется
-			perimeter := sideA * 4
-			res := math.Sqrt(perimeter)
-			msg = v1.SqrtSum + strconv.FormatFloat(res, 'f', 2, 64)
-		}
-	case strings.EqualFold(e.op, v1.OpPow):
-		{
-			// аналогично
-			res := sideA * sideA * 4
-			msg = v1.SumPow + strconv.FormatFloat(res, 'f', 2, 64)
-		}
-	default:
-		{
-			err = errors.New(v1.UnknownOp)
-		}
+	radius := s.CircumscribedRadius()
+	msg = fmt.Sprintf(v1.CanCreateCircle, radius)
+	return
+}
+
+// VisitCircle ...
+func (e *element) VisitCircle(c circle.Circle) (msg string, err error) {
+	err = c.CheckCorrect()
+	if err != nil {
+		return
 	}
+	radius := c.GetRadius()
+	length := c.Length()
+	square := c.Square()
+	msg = fmt.Sprintf(v1.CircleStatus, radius, length, square)
 	return
 }
 
 // NewVisitor ...
-func NewVisitor(op string) Visitor {
-	return &element{
-		op: op,
-	}
+func NewVisitor() Visitor {
+	return &element{}
 }

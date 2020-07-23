@@ -2,6 +2,7 @@ package square
 
 import (
 	"errors"
+	"math"
 
 	"github.com/konvulcius/patternsWB/visitor/pkg/api/v1"
 )
@@ -12,31 +13,40 @@ type visitor interface {
 
 // Square ...
 type Square interface {
-	GetSides() (a, b, c, d float64)
+	GetSide() (side float64)
+	Diagonal() (d float64)
+	CircumscribedRadius() (r float64)
 	CheckCorrect() (err error)
 	Accept(v visitor) (msg string, err error)
 }
 
 type square struct {
-	a float64
-	b float64
-	c float64
-	d float64
+	side float64
 }
 
-// GetSides return square's sides
-func (s *square) GetSides() (a, b, c, d float64) {
-	a = s.a
-	b = s.b
-	c = s.c
-	d = s.d
+// GetSide return square's side
+func (s *square) GetSide() (side float64) {
+	return s.side
+}
+
+// Diagonal return square's diagonal
+func (s *square) Diagonal() (d float64) {
+	d = math.Sqrt(2) * s.side
 	return
 }
 
-// CheckCorrect checks right input sides
+// CircumscribedRadius return radius of circle that circumscribe square
+func (s *square) CircumscribedRadius() (r float64) {
+	r = s.Diagonal() / 2
+	return
+}
+
+// CheckCorrect ...
 func (s *square) CheckCorrect() (err error) {
-	if s.a == 0.0 || s.a != s.b || s.b != s.c || s.c != s.d {
-		err = errors.New(v1.WrongSquare)
+	if s.side == 0 {
+		err = errors.New(v1.ZeroSideSquare)
+	} else if s.side < 0 {
+		err = errors.New(v1.NegativeSideSquare)
 	}
 	return
 }
@@ -48,11 +58,8 @@ func (s *square) Accept(v visitor) (msg string, err error) {
 }
 
 // NewSquare ...
-func NewSquare(a, b, c, d float64) Square {
+func NewSquare(side float64) Square {
 	return &square{
-		a: a,
-		b: b,
-		c: c,
-		d: d,
+		side: side,
 	}
 }
