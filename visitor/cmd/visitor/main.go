@@ -39,12 +39,14 @@ func main() {
 		msg = err.Error()
 	}
 	fmt.Print(prefixTriangle, msg)
+
 	// visit square
 	msg, err = square.Accept(visitor)
 	if err != nil {
 		msg = err.Error()
 	}
 	fmt.Print(prefixSquare, msg)
+
 	// visit circle
 	msg, err = circle.Accept(visitor)
 	if err != nil {

@@ -20,7 +20,7 @@ type Visitor interface {
 type element struct {
 }
 
-// VisitTriangle work with triangle's sides and do some op
+// VisitTriangle check triangle, and notify can build square or not
 func (e *element) VisitTriangle(t triangle.Triangle) (msg string, err error) {
 	err = t.CheckCorrect()
 	if err != nil {
@@ -30,6 +30,7 @@ func (e *element) VisitTriangle(t triangle.Triangle) (msg string, err error) {
 		err = errors.New(v1.CantCreateSquare)
 		return
 	}
+
 	// choose square's side
 	a, b, c := t.GetSides()
 	var squareSide float64
@@ -45,7 +46,7 @@ func (e *element) VisitTriangle(t triangle.Triangle) (msg string, err error) {
 	return
 }
 
-// VisitSquare ...
+// VisitSquare notify radius of circumscribed circle
 func (e *element) VisitSquare(s square.Square) (msg string, err error) {
 	err = s.CheckCorrect()
 	if err != nil {
@@ -56,7 +57,7 @@ func (e *element) VisitSquare(s square.Square) (msg string, err error) {
 	return
 }
 
-// VisitCircle ...
+// VisitCircle notify simple parameters of circle
 func (e *element) VisitCircle(c circle.Circle) (msg string, err error) {
 	err = c.CheckCorrect()
 	if err != nil {
